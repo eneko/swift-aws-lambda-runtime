@@ -51,12 +51,12 @@ extension Lambda {
             self.isGettingNextInvocation = true
             return self.runtimeClient.getNextInvocation(logger: logger).peekError { error in
                 logger.error("could not fetch work from lambda runtime engine: \(error)")
-            }.flatMap { invocation, payload in
+            }.flatMap { invocation, event in
                 // 2. send invocation to handler
                 self.isGettingNextInvocation = false
                 let context = Context(logger: logger, eventLoop: self.eventLoop, invocation: invocation)
                 logger.debug("sending invocation to lambda handler \(handler)")
-                return handler.handle(context: context, payload: payload)
+                return handler.handle(context: context, event: event)
                     .mapResult { result in
                         if case .failure(let error) = result {
                             logger.warning("lambda handler returned an error: \(error)")
@@ -83,9 +83,9 @@ extension Lambda {
 
 private extension Lambda.Context {
     convenience init(logger: Logger, eventLoop: EventLoop, invocation: Lambda.Invocation) {
-        self.init(requestId: invocation.requestId,
-                  traceId: invocation.traceId,
-                  invokedFunctionArn: invocation.invokedFunctionArn,
+        self.init(requestID: invocation.requestID,
+                  traceID: invocation.traceID,
+                  invokedFunctionARN: invocation.invokedFunctionARN,
                   deadline: DispatchWallTime(millisSinceEpoch: invocation.deadlineInMillisSinceEpoch),
                   cognitoIdentity: invocation.cognitoIdentity,
                   clientContext: invocation.clientContext,

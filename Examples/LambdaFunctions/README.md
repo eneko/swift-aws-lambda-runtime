@@ -4,6 +4,8 @@ This sample project is a collection of Lambda functions that demonstrates
 how to write a simple Lambda function in Swift, and how to package and deploy it
 to the AWS Lambda platform.
 
+Note: The example scripts assume you have [jq](https://stedolan.github.io/jq/download/) command line tool installed.
+
 ## Deployment instructions using AWS CLI
 
 Steps to deploy this sample to AWS Lambda using the AWS CLI:
@@ -18,7 +20,11 @@ Steps to deploy this sample to AWS Lambda using the AWS CLI:
   ./scripts/deploy.sh
   ```
 
-  Note: This script assumes you have AWS CLI installed and credentials setup in `~/.aws/credentials`.
+  Notes: 
+  - This script assumes you have AWS CLI installed and credentials setup in `~/.aws/credentials`.
+  - The default lambda function name is `SwiftSample`. You can specify a different one updating `lambda_name` in `deploy.sh`
+  - Update `s3_bucket=swift-lambda-test` in `deploy.sh` before running (AWS S3 buckets require a unique global name)
+  - Both lambda function and S3 bucket must exist before deploying for the first time.
 
 ### Deployment instructions using AWS SAM (Serverless Application Model)
 
